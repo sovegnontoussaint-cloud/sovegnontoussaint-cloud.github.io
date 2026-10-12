@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="fr" data-ui="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Delberson Sovegnon — doctorant en microbiologie-pharmacologie (UCLouvain / Université d'Abomey-Calavi). Pharmacognosie computationnelle et produits naturels.">
+<title>Delberson Sovegnon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;1,500&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column (~68ch) with a narrow left rail for section labels on wide screens; molecular sketch in the header */
+:root {
+  --bg: #f5f7f4;
+  --surface: #ffffff;
+  --ink: #15211b;
+  --muted: #56655c;
+  --line: #d9e1db;
+  --accent: #1e6b57;
+  --accent-soft: #e2efe9;
+  --ochre: #a06a12;
+  --f-display: "Spectral", "Iowan Old Style", Georgia, serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1613; --surface: #151e1a; --ink: #e4ece6;
+    --muted: #9aaba1; --line: #26332d; --accent: #6cc3a5; --accent-soft: #1b2b25; --ochre: #e0b05a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1613; --surface: #151e1a; --ink: #e4ece6;
+  --muted: #9aaba1; --line: #26332d; --accent: #6cc3a5; --accent-soft: #1b2b25; --ochre: #e0b05a;
+  color-scheme: dark;
+}
+
+html:not([data-ui]) [data-l="en"], html[data-ui="fr"] [data-l="en"], html[data-ui="en"] [data-l="fr"] { display: none !important; }
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.6;
+  padding-inline: 20px; padding-block: 0 64px;
+}
+.wrap { max-width: 960px; margin-inline: auto; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* Top bar */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  margin-inline: -20px; padding: 10px 20px;
+}
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.mark { font-family: var(--f-mono); font-size: 13px; color: var(--muted); letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top nav { display: flex; gap: 18px; font-size: 14px; }
+.top nav a { color: var(--muted); text-decoration: none; }
+.top nav a:hover { color: var(--ink); }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; flex: none; }
+.lang button {
+  font: 500 12px/1 var(--f-mono); letter-spacing: .06em; color: var(--muted);
+  background: none; border: 0; padding: 6px 10px; border-radius: 999px; cursor: pointer;
+}
+.lang button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+@media (max-width: 720px) { .top nav { display: none; } }
+
+/* Hero */
+header.hero {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end;
+  padding-block: 64px 40px; border-bottom: 1px solid var(--line);
+}
+.avatar { width: 104px; height: 104px; border-radius: 50%; object-fit: cover; object-position: 55% 28%; display: block; margin: 0 0 22px; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--line); background: #fff; }
+.eyebrow { font: 500 12px/1.4 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+h1 {
+  font-family: var(--f-display); font-weight: 600; font-size: clamp(2.3rem, 6vw, 3.6rem);
+  line-height: 1.05; letter-spacing: -.01em; margin: 0 0 6px; text-wrap: balance;
+}
+.fullname { font-family: var(--f-display); font-style: italic; color: var(--muted); font-size: 1.05rem; margin: 0 0 20px; }
+.role { font-size: 1.15rem; max-width: 40ch; margin: 0 0 22px; text-wrap: balance; }
+.affils { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.affils li { display: flex; gap: 8px; align-items: baseline; }
+.affils b { font: 500 11px/1 var(--f-mono); color: var(--ochre); letter-spacing: .06em; }
+.molecule { width: 190px; max-width: 100%; color: var(--accent); }
+.molecule figcaption { font: 400 11px/1.4 var(--f-mono); color: var(--muted); margin-top: 6px; text-align: right; }
+@media (max-width: 640px) {
+  header.hero { grid-template-columns: 1fr; padding-block: 40px 32px; }
+  .molecule { width: 150px; order: -1; }
+  .molecule figcaption { text-align: left; }
+}
+
+/* Sections */
+section { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 28px; padding-block: 48px; border-bottom: 1px solid var(--line); }
+section > h2 {
+  font: 500 12px/1.5 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  margin: 6px 0 0; position: sticky; top: 72px; align-self: start;
+}
+@media (max-width: 760px) { section { grid-template-columns: 1fr; gap: 16px; padding-block: 36px; } section > h2 { position: static; } }
+.body { min-width: 0; max-width: 68ch; }
+.body > p { margin: 0 0 14px; }
+.lede { font-family: var(--f-display); font-size: 1.3rem; line-height: 1.45; margin: 0 0 18px !important; text-wrap: pretty; }
+h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; margin: 0; line-height: 1.3; }
+
+/* Pipeline */
+.pipeline { list-style: none; margin: 8px 0 24px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.pipeline li { padding: 18px 18px 20px; border-left: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+.pipeline li:first-child { border-left: 0; }
+.pipeline .step { font: 500 11px/1 var(--f-mono); letter-spacing: .08em; color: var(--accent); text-transform: uppercase; }
+.pipeline p { margin: 0; font-size: 14px; color: var(--muted); }
+@media (max-width: 640px) { .pipeline { grid-template-columns: 1fr; } .pipeline li { border-left: 0; border-top: 1px solid var(--line); } .pipeline li:first-child { border-top: 0; } }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.chips li { font-size: 13.5px; padding: 5px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); }
+.sub { font: 500 12px/1.4 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 26px 0 10px; }
+.sub:first-child { margin-top: 0; }
+
+/* Timeline */
+.tl { list-style: none; margin: 0; padding: 0; display: grid; gap: 26px; }
+.tl li { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 18px; }
+.when { font: 400 13px/1.6 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.where { color: var(--muted); font-size: 14.5px; margin: 2px 0 0; }
+.tl p.note { margin: 8px 0 0; font-size: 14.5px; }
+.tl .now { color: var(--accent); font-weight: 500; }
+@media (max-width: 520px) { .tl li { grid-template-columns: 1fr; gap: 2px; } }
+
+/* Publications */
+.pubs { list-style: none; margin: 0; padding: 0; counter-reset: pub; display: grid; gap: 0; }
+.pubs li { counter-increment: pub; display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 10px; padding-block: 16px; border-top: 1px solid var(--line); }
+.pubs li:first-child { border-top: 0; padding-top: 0; }
+.pubs li::before { content: "[" counter(pub) "]"; font: 400 13px/1.7 var(--f-mono); color: var(--muted); }
+.pubs .t { font-family: var(--f-display); font-size: 1.08rem; line-height: 1.4; }
+.pubs .t i { font-style: italic; }
+.pubs .tag { display: inline-block; font: 500 11px/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ochre); margin-right: 8px; }
+.pubs a.find { font-size: 13px; }
+.pubintro { color: var(--muted); font-size: 14.5px; margin: 0 0 18px !important; }
+.pubs li.yr { counter-increment: none; display: block; font: 500 13px/1 var(--f-mono); color: var(--accent); letter-spacing: .06em; padding: 22px 0 6px; border-top: 0; }
+.pubs li.yr::before { content: none; }
+.pubs li.yr:first-child { padding-top: 0; }
+.pubs li.yr + li { border-top: 0; }
+.pubs .au { font-size: 14px; color: var(--muted); margin-top: 6px; }
+.pubs .au b { color: var(--ink); font-weight: 600; }
+.pubs .src { font-size: 13.5px; margin-top: 3px; overflow-wrap: anywhere; }
+.pubs .src a { font-family: var(--f-mono); font-size: 12.5px; }
+.first { display: inline-block; font: 500 11px/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--bg); background: var(--accent); padding: 3px 6px; border-radius: 4px; margin-right: 8px; vertical-align: 2px; }
+.figs { grid-template-columns: 1fr; }
+.figs li { grid-template-columns: 3rem minmax(0, 1fr); }
+.figs li::before { content: "Fig. " counter(pub); }
+.pubmeta { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 0; align-items: baseline; }
+
+/* Two-col lists */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 36px; }
+@media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 15px; }
+.plain li > span:not([data-l]) { color: var(--muted); }
+.plain + .sub { margin-top: 26px; }
+.morenote { font-size: 14px; color: var(--muted); margin: 14px 0 0; }
+
+/* Contact */
+.contact { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px; display: grid; gap: 14px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.row .k { font: 500 11px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); width: 7.5rem; }
+.addr { font-family: var(--f-mono); font-size: 14.5px; user-select: all; overflow-wrap: anywhere; min-width: 0; }
+.copy { font: 500 12px/1 var(--f-body); border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+.copy:hover { border-color: var(--accent); }
+footer { padding-top: 28px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .molecule .bond { stroke-dasharray: 260; stroke-dashoffset: 0; animation: draw 1.6s ease-out both; }
+  @keyframes draw { from { stroke-dashoffset: 260; } to { stroke-dashoffset: 0; } }
+}
+</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="top">
+  <div class="wrap">
+    <span class="mark">D. Sovegnon · UCLouvain / UAC</span>
+    <nav aria-label="Sections">
+      <a href="#recherche"><span data-l="fr">Recherche</span><span data-l="en">Research</span></a>
+      <a href="#parcours"><span data-l="fr">Parcours</span><span data-l="en">Experience</span></a>
+      <a href="#publications">Publications</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Langue / Language">
+      <button type="button" id="btn-fr" data-set="fr" aria-pressed="true">FR</button>
+      <button type="button" id="btn-en" data-set="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="hero">
+    <div>
+      <img class="avatar" src="data:image/jpeg;base64,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RzOFEpbHGWGKYXKcVvtkBVFjH91OldFFMPs456CsUoVbOeKkMrIvU4osJskupgXOKhhUyNtH6VCxMknGTmut8H6A+q6nFGEJXeMnFNLoZTnZHo3wy8OeXaLfTx4GcqD3PNenCq1hZx2NlDbxDCooFWq6oxsjzpy5ncKKKKokKKKKACiiigAooooAzfDv/Is6T/15w/8AoArSrN8O/wDIs6T/ANecP/oArSoAKKKKACiiigAooooAKKKKACiiigAooooA85+MEm3w5bRg/M0+cfRTXgk0oBOete0fGO+j22NoGy43Owz06V4xcQ7wSOvasKm520V7hGHBPWp41y1Z8UpjOxhV9CcCsmdESwqqGB61rWVraXQxKq59+tYquc81IzsRgMwPqKRdjan8O2DMwVimemOM1nXvhkQIXiuT+PNVRc3kTDbdPgdm5qZ9TnkTEkhP4UIbMw/aYGMThWUdGFP3eZxT2PmMS3NT2do002MYHrVGbY/T7FpJQcHk1758PPDf9l6Yt1OuJpBwCOQK5LwD4P8At0y3dwn+ip6j7x9K9jVQihVAAHQVtTj1ZxVp9EOooorU5wooooAKKKKACiiigAooooAzfDv/ACLOk/8AXnD/AOgCtKs3w7/yLOk/9ecP/oArSoAKKKKACiiigAooooAKKKKACims6oMsQB71Rn1myg/5ah29E5oA0KytU1dLJSkY3zH8hVGbX5pH8uGILu6M3UVmyQncxJLM3OT3pgee/Eq2nkazv3JYMCjn36ivOiGHWvoDV9Ij1bRprOQffU7SezdjXhV5avaXctvKMPGxU59Qa56iaZ3UJXjYyb22LoZIxhh+tRWN75hKPwwrV2gjBrMvbIRsZY/lY9DWZuaEbKGBNXPtMOOVrmY9QltztlGR61Muoo7cniiw+Y25mR0yvFUTnPFRrKrrww/OmmdE4J6elKwcxYRXZgB1Jrv/AAJ4V/tvUlWSULAgDyY6ken41wllfSLG6xoBv4yRyBXuvwl042+iz3bg7pmABPoM1cFdmFaVonf2trDZ2yQQRhI0AAAqalorpOAKKKKACiiigAooooAKKKKACiiigDN8O/8AIs6T/wBecP8A6AK0qzfDv/Is6T/15w/+gCtKgAooooAKKQkDvWdd6zb22VUmST+6ooA0qhmuobdd00ioPeuauNZv58hB5SH061R8ppWL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" alt="Portrait de Delberson Sovegnon" width="104" height="104">
+      <p class="eyebrow"><span data-l="fr">Doctorant en microbiologie–pharmacologie</span><span data-l="en">PhD researcher in microbiology–pharmacology</span></p>
+      <h1>Delberson Sovegnon</h1>
+      <p class="fullname">Sèmèvo Toussaint Delberson Sovegnon</p>
+      <p class="role">
+        <span data-l="fr">Pharmacognosie computationnelle et découverte de médicaments issus de produits naturels, contre les maladies infectieuses et métaboliques.</span>
+        <span data-l="en">Computational pharmacognosy and natural-product drug discovery for infectious and metabolic diseases.</span>
+      </p>
+      <ul class="affils">
+        <li><b>BE</b> Louvain Drug Research Institute, UCLouvain</li>
+        <li><b>BJ</b> <span data-l="fr">Université d'Abomey-Calavi</span><span data-l="en">University of Abomey-Calavi</span></li>
+        <li><b>LOC</b><span data-l="fr">Bruxelles, Belgique</span><span data-l="en">Brussels, Belgium</span></li>
+      </ul>
+    </div>
+    <figure class="molecule" style="margin:0" aria-label="Flavone scaffold">
+      <svg viewBox="0 0 170 118" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" role="img">
+        <title>Flavone (2-phenylchromen-4-one)</title>
+        <polygon class="bond" points="40,40 59.1,51 59.1,73 40,84 20.9,73 20.9,51" />
+        <polyline class="bond" points="59.1,51 78.1,40 97.2,51 97.2,73 78.1,84 59.1,73" />
+        <polygon class="bond" points="135.3,7 154.3,18 154.3,40 135.3,51 116.2,40 116.2,18" />
+        <line class="bond" x1="97.2" y1="51" x2="116.2" y2="40" />
+        <!-- inner double bonds -->
+        <line x1="25.5" y1="54" x2="25.5" y2="70" opacity=".75" />
+        <line x1="43" y1="45.5" x2="55" y2="52.5" opacity=".75" />
+        <line x1="43" y1="78.5" x2="55" y2="71.5" opacity=".75" />
+        <line x1="93" y1="55" x2="93" y2="69" opacity=".75" />
+        <line x1="138.3" y1="12.5" x2="150" y2="19.5" opacity=".75" />
+        <line x1="150" y1="38.5" x2="138.3" y2="45.5" opacity=".75" />
+        <line x1="120.6" y1="22" x2="120.6" y2="36" opacity=".75" />
+        <!-- carbonyl -->
+        <line x1="76" y1="84" x2="76" y2="100" />
+        <line x1="80.2" y1="84" x2="80.2" y2="100" />
+        <circle cx="78.1" cy="40" r="7" fill="var(--bg)" stroke="none" />
+        <circle cx="78.1" cy="108" r="7" fill="var(--bg)" stroke="none" />
+        <text x="78.1" y="44.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="IBM Plex Mono, monospace" font-size="12.5">O</text>
+        <text x="78.1" y="112.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="IBM Plex Mono, monospace" font-size="12.5">O</text>
+      </svg>
+      <figcaption><span data-l="fr">squelette flavone · C₁₅H₁₀O₂</span><span data-l="en">flavone scaffold · C₁₅H₁₀O₂</span></figcaption>
+    </figure>
+  </header>
+
+  <section id="apropos">
+    <h2><span data-l="fr">À propos</span><span data-l="en">About</span></h2>
+    <div class="body">
+      <p class="lede" data-l="fr">Je cherche, dans les plantes médicinales d'Afrique de l'Ouest, des molécules capables de traiter les infections résistantes et les troubles métaboliques.</p>
+      <p class="lede" data-l="en">I look for molecules in West African medicinal plants that can treat drug-resistant infections and metabolic disorders.</p>
+      <p data-l="fr">Je prépare un doctorat en cotutelle entre l'Université d'Abomey-Calavi (Bénin) et l'UCLouvain (Belgique), au Louvain Drug Research Institute. Mon travail associe la découverte de médicaments assistée par ordinateur à la microbiologie expérimentale : je modélise, je priorise, puis je valide au laboratoire les composés d'origine végétale les plus prometteurs.</p>
+      <p data-l="en">I am a joint PhD candidate between the University of Abomey-Calavi (Benin) and UCLouvain (Belgium), based at the Louvain Drug Research Institute. My work combines computer-aided drug discovery with experimental microbiology: I model and rank plant-derived compounds, then validate the most promising ones in the lab.</p>
+      <p data-l="fr">J'ai travaillé dans des projets de recherche au Bénin, en Finlande, en Espagne et en Belgique. Je suis ouvert aux collaborations internationales autour des produits naturels, des maladies infectieuses et de la pharmacologie computationnelle.</p>
+      <p data-l="en">I have worked on research projects in Benin, Finland, Spain and Belgium. I welcome international collaborations on natural products, infectious diseases and computational pharmacology.</p>
+    </div>
+  </section>
+
+  <section id="recherche">
+    <h2><span data-l="fr">Recherche</span><span data-l="en">Research</span></h2>
+    <div class="body">
+      <p data-l="fr">Une même démarche, de l'écran au modèle vivant :</p>
+      <p data-l="en">One workflow, from screen to living model:</p>
+      <ol class="pipeline">
+        <li>
+          <span class="step">1 · In silico</span>
+          <h3><span data-l="fr">Prioriser</span><span data-l="en">Prioritise</span></h3>
+          <p data-l="fr">Docking, docking induit, dynamique moléculaire, MM/GBSA, QSAR et prédiction ADMET.</p>
+          <p data-l="en">Docking, induced-fit docking, molecular dynamics, MM/GBSA, QSAR and ADMET prediction.</p>
+        </li>
+        <li>
+          <span class="step">2 · In vitro</span>
+          <h3><span data-l="fr">Valider</span><span data-l="en">Validate</span></h3>
+          <p data-l="fr">Activité antimicrobienne et antibiofilm, inhibition enzymatique (α-amylase, α-glucosidase), cytotoxicité.</p>
+          <p data-l="en">Antimicrobial and anti-biofilm activity, enzyme inhibition (α-amylase, α-glucosidase), cytotoxicity.</p>
+        </li>
+        <li>
+          <span class="step">3 · In vivo</span>
+          <h3><span data-l="fr">Confirmer</span><span data-l="en">Confirm</span></h3>
+          <p data-l="fr">Modèles <i>Caenorhabditis elegans</i> et rats Wistar.</p>
+          <p data-l="en"><i>Caenorhabditis elegans</i> and Wistar rat models.</p>
+        </li>
+      </ol>
+
+      <p class="sub"><span data-l="fr">Expertise</span><span data-l="en">Expertise</span></p>
+      <ul class="chips">
+        <li><span data-l="fr">Pharmacognosie computationnelle</span><span data-l="en">Computational pharmacognosy</span></li>
+        <li><span data-l="fr">Docking moléculaire</span><span data-l="en">Molecular docking</span></li>
+        <li><span data-l="fr">Dynamique moléculaire</span><span data-l="en">Molecular dynamics</span></li>
+        <li><span data-l="fr">Énergie libre MM/GBSA</span><span data-l="en">MM/GBSA free energy</span></li>
+        <li><span data-l="fr">Pharmacologie des réseaux</span><span data-l="en">Network pharmacology</span></li>
+        <li><span data-l="fr">Polypharmacologie</span><span data-l="en">Polypharmacology</span></li>
+        <li><span data-l="fr">ADMET et pharmacocinétique</span><span data-l="en">ADMET &amp; pharmacokinetics</span></li>
+        <li><span data-l="fr">Phytochimie</span><span data-l="en">Phytochemistry</span></li>
+        <li><span data-l="fr">Résistance aux antimicrobiens</span><span data-l="en">Antimicrobial resistance</span></li>
+        <li><span data-l="fr">Biologie de l'infection</span><span data-l="en">Infection biology</span></li>
+        <li><span data-l="fr">Culture cellulaire</span><span data-l="en">Cell culture</span></li>
+        <li><span data-l="fr">Modèle <i>C. elegans</i></span><span data-l="en"><i>C. elegans</i> model</span></li>
+        <li><span data-l="fr">Expérimentation animale</span><span data-l="en">Animal experimentation</span></li>
+        <li><span data-l="fr">Enquêtes ethnobotaniques</span><span data-l="en">Ethnobotanical surveys</span></li>
+        <li><span data-l="fr">Optimisation de leads</span><span data-l="en">Lead optimisation</span></li>
+      </ul>
+
+      <p class="sub"><span data-l="fr">Outils</span><span data-l="en">Tools</span></p>
+      <ul class="chips">
+        <li>Schrödinger Maestro</li>
+        <li>LiveDesign</li>
+        <li>AlphaFold</li>
+        <li>PyMOL</li>
+        <li>ChimeraX</li>
+        <li>PyRx</li>
+        <li>Phenix</li>
+        <li>Coot</li>
+        <li>Open Babel</li>
+        <li>UGENE</li>
+        <li>RStudio</li>
+        <li>GraphPad</li>
+        <li>KoboCollect</li>
+        <li>Zotero</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="parcours">
+    <h2><span data-l="fr">Parcours</span><span data-l="en">Experience</span></h2>
+    <div class="body">
+      <ol class="tl">
+        <li>
+          <div class="when">2024 – <span class="now"><span data-l="fr">auj.</span><span data-l="en">now</span></span></div>
+          <div>
+            <h3><span data-l="fr">Doctorant en cotutelle</span><span data-l="en">Joint PhD researcher</span></h3>
+            <p class="where">Louvain Drug Research Institute, UCLouvain · <span data-l="fr">Université d'Abomey-Calavi</span><span data-l="en">University of Abomey-Calavi</span></p>
+            <p class="note" data-l="fr">Doctorat en microbiologie et pharmacologie (fin prévue en 2028). Au LDRI à Bruxelles depuis juillet 2025.</p>
+            <p class="note" data-l="en">PhD in microbiology and pharmacology (expected 2028). Based at LDRI in Brussels since July 2025.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2026 · <span data-l="fr">avr.–mai</span><span data-l="en">Apr–May</span></div>
+          <div>
+            <h3><span data-l="fr">Doctorant invité</span><span data-l="en">Visiting PhD researcher</span></h3>
+            <p class="where">Phyto-Pharm Research Group, Universidad San Jorge · Zaragoza, <span data-l="fr">Espagne</span><span data-l="en">Spain</span></p>
+            <p class="note" data-l="fr">Avec le Pr Víctor López Ramos : potentiel antidiabétique d'extraits de plantes du Bénin (inhibition de l'α-amylase et de l'α-glucosidase) et toxicité préliminaire par le test <i>Artemia salina</i>.</p>
+            <p class="note" data-l="en">With Prof. Víctor López Ramos: antidiabetic potential of Beninese plant extracts (α-amylase and α-glucosidase inhibition) and preliminary toxicity with the <i>Artemia salina</i> assay.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2023 · <span data-l="fr">août–déc.</span><span data-l="en">Aug–Dec</span></div>
+          <div>
+            <h3><span data-l="fr">Étudiant invité</span><span data-l="en">Visiting student</span></h3>
+            <p class="where">Anti-infectives Research Group (AIR), <span data-l="fr">Faculté de pharmacie, Université d'Helsinki</span><span data-l="en">Faculty of Pharmacy, University of Helsinki</span> · <span data-l="fr">Finlande</span><span data-l="en">Finland</span></p>
+            <p class="note" data-l="fr">Stage de recherche de master avec la Pr Leena Hanski, financé par une bourse de mobilité GINTL : activité antibactérienne d'<i>Uvaria chamae</i> in vitro et in vivo sur le modèle <i>C. elegans</i>.</p>
+            <p class="note" data-l="en">Master's research internship with Prof. Leena Hanski, funded by a GINTL mobility scholarship: in vitro and in vivo antibacterial activity of <i>Uvaria chamae</i> in the <i>C. elegans</i> model.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2019 – 2024</div>
+          <div>
+            <h3><span data-l="fr">Assistant de recherche</span><span data-l="en">Research assistant</span></h3>
+            <p class="where"><span data-l="fr">Unité de recherche en microbiologie appliquée et pharmacologie des substances naturelles (URMAPha)</span><span data-l="en">Research Unit in Applied Microbiology and Pharmacology of Natural Substances (URMAPha)</span> · <span data-l="fr">Bénin</span><span data-l="en">Benin</span></p>
+            <p class="note" data-l="fr">Y compris le stage de master académique (2022–2023).</p>
+            <p class="note" data-l="en">Including the academic master's internship (2022–2023).</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2021 – 2024</div>
+          <div>
+            <h3><span data-l="fr">Médecine traditionnelle et ethnobotanique</span><span data-l="en">Traditional medicine and ethnobotany</span></h3>
+            <p class="where"><span data-l="fr">Université d'Abomey-Calavi · Bénin</span><span data-l="en">University of Abomey-Calavi · Benin</span></p>
+            <p class="note" data-l="fr">Enquêteur pour le projet MINNANGAN, financé par l'Union européenne, sur la médecine traditionnelle béninoise (2024). Membre du comité d'organisation d'un atelier de formation des tradipraticiens, financé par GINTL (2023). Enquêteur pour une enquête ethnobotanique sur les plantes utilisées contre les diarrhées bactériennes, financée par le CBRSI (2021).</p>
+            <p class="note" data-l="en">Field investigator for the EU-funded MINNANGAN project on traditional Beninese medicine (2024). Organising committee member for a GINTL-funded training workshop for traditional medicine practitioners (2023). Investigator for an ethnobotanical survey of plants used against bacterial diarrhoea, funded by CBRSI (2021).</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2020</div>
+          <div>
+            <h3><span data-l="fr">Riposte COVID-19</span><span data-l="en">COVID-19 response</span></h3>
+            <p class="where"><span data-l="fr">Chargé de mission, réseau des jeunes chercheurs du PTRS / CAMES (ProSeRR-COVID 19) · Agent de dépistage volontaire, aéroport de Cotonou</span><span data-l="en">Mission officer, CAMES young researchers' network (ProSeRR-COVID 19) · Volunteer screening officer, Cotonou airport</span></p>
+            <p class="note" data-l="fr">Campagnes de sensibilisation, outils de communication, prélèvements naso- et oropharyngés, tests de diagnostic rapide.</p>
+            <p class="note" data-l="en">Awareness campaigns, communication materials, naso- and oropharyngeal swabs, rapid diagnostic tests.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2018 – 2019</div>
+          <div>
+            <h3><span data-l="fr">Technicien de laboratoire médical</span><span data-l="en">Medical laboratory technician</span></h3>
+            <p class="where"><span data-l="fr">Hôpital de zone Allada-Toffo-Zè · Hôpital de zone de Menontin, Cotonou</span><span data-l="en">Allada-Toffo-Zè district hospital · Menontin district hospital, Cotonou</span></p>
+            <p class="note" data-l="fr">Hématologie, hémostase, biochimie, sérologie, bactériologie, parasitologie et immuno-hématologie.</p>
+            <p class="note" data-l="en">Haematology, haemostasis, biochemistry, serology, bacteriology, parasitology and immunohaematology.</p>
+          </div>
+        </li>
+      </ol>
+
+      <p class="sub" style="margin-top:36px"><span data-l="fr">Formation</span><span data-l="en">Education</span></p>
+      <ol class="tl">
+        <li>
+          <div class="when">2024 – 2028</div>
+          <div>
+            <h3><span data-l="fr">Doctorat en microbiologie et pharmacologie</span><span data-l="en">PhD, Microbiology and Pharmacology</span></h3>
+            <p class="where"><span data-l="fr">Cotutelle Université d'Abomey-Calavi – UCLouvain</span><span data-l="en">Joint degree, University of Abomey-Calavi – UCLouvain</span></p>
+            <p class="note" data-l="fr">Thèse : potentiel d'<i>Uvaria chamae</i> contre le diabète et les infections à germes multirésistants au Bénin (efficacité, toxicité et mécanismes d'action selon la phytochimie). Promoteur : Pr Joseph Lorent. Co-promoteur : Pr Victorien Dougnon.</p>
+            <p class="note" data-l="en">Thesis: potential of <i>Uvaria chamae</i> against diabetes and multidrug-resistant infections in Benin (efficacy, toxicity and mechanisms of action in relation to phytochemistry). Supervisor: Prof. Joseph Lorent. Co-supervisor: Prof. Victorien Dougnon.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2020 – 2024</div>
+          <div>
+            <h3><span data-l="fr">Master recherche en microbiologie moléculaire et médicale</span><span data-l="en">Research Master, Molecular and Medical Microbiology</span></h3>
+            <p class="where"><span data-l="fr">Université d'Abomey-Calavi · mention Excellent</span><span data-l="en">University of Abomey-Calavi · Distinction: Excellent</span></p>
+            <p class="note" data-l="fr">Mémoire : activité antibactérienne in vitro et in vivo d'extraits d'<i>Uvaria chamae</i> contre des bactéries multirésistantes, sur le modèle <i>C. elegans</i>. Direction : Pr Leena Hanski et Pr Victorien Dougnon.</p>
+            <p class="note" data-l="en">Thesis: in vitro and in vivo antibacterial activity of <i>Uvaria chamae</i> extracts against multidrug-resistant bacteria, using the <i>C. elegans</i> model. Supervisors: Prof. Leena Hanski and Prof. Victorien Dougnon.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2016 – 2019</div>
+          <div>
+            <h3><span data-l="fr">Licence professionnelle en analyses biologiques et biochimiques</span><span data-l="en">Professional Bachelor, Biological and Biochemical Analysis</span></h3>
+            <p class="where"><span data-l="fr">École supérieure « Le Faucon », Abomey-Calavi · mention Excellent</span><span data-l="en">“Le Faucon” Higher School, Abomey-Calavi · Distinction: Excellent</span></p>
+            <p class="note" data-l="fr">Mémoire : activité antibactérienne de la sève de <i>Jatropha multifida</i> et de l'extrait d'<i>Artemisia annua</i> sur des souches cliniques d'infections urinaires (publié en 2019).</p>
+            <p class="note" data-l="en">Thesis: antibacterial activity of <i>Jatropha multifida</i> sap and <i>Artemisia annua</i> extract on clinical urinary tract infection strains (published in 2019).</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="publications">
+    <h2>Publications</h2>
+    <div class="body">
+      <p data-l="fr" class="pubintro">8 publications évaluées par les pairs, 2019–2026. Mon nom est en gras.</p>
+      <p data-l="en" class="pubintro">8 peer-reviewed publications, 2019–2026. My name is in bold.</p>
+      <ol class="pubs">
+        <li class="yr" aria-hidden="true">2026</li>
+        <li><div>
+          <div class="t"><span class="tag">In silico</span>Hierarchical computational prioritization of <i>Uvaria chamae</i> phytochemicals targeting Ebola virus glycoprotein and SARS-CoV-2 PLpro</div>
+          <div class="au">Medegan Fagla S, <b>Sovegnon T</b>, Bete M, Sanvi M, Legba B, Hounsou KE, Klotoe J-R, Dougnon V.</div>
+          <div class="src"><i>Compounds</i> 2026; 6: 57 · <a href="https://doi.org/10.3390/compounds6040057" target="_blank" rel="noopener">doi:10.3390/compounds6040057</a></div>
+        </div></li>
+        <li><div>
+          <div class="t"><span class="tag">Review</span>From folk medicine to therapeutic innovation: a narrative review of the ethnomedicinal uses, bioactive constituents, and antidiabetic and anti-infective potential of <i>Uvaria chamae</i> P. Beauv. (Annonaceae)</div>
+          <div class="au">Hounsou KE, <b>Sovegnon T</b>, Houngnihin RA, Quinet M, Gandonou CB.</div>
+          <div class="src"><i>Journal of Phytomedicine</i> 2026; 1: 11 · <a href="https://doi.org/10.3390/jphytomed1030011" target="_blank" rel="noopener">doi:10.3390/jphytomed1030011</a></div>
+        </div></li>
+        <li><div>
+          <div class="t"><span class="tag">In silico</span><span class="first"><span data-l="fr">1er auteur</span><span data-l="en">First author</span></span>Integrated in silico prioritization of antidiabetic phytochemicals from <i>Uvaria chamae</i> P. Beauv. based on docking, induced-fit docking, QSAR, and ADMET analyses</div>
+          <div class="au"><b>Sovegnon T</b>, Medegan Fagla S, Legba BB, Lorent J, Quetin-Leclercq J, Ganfon H, Klotoe J-R, Gbaguidi F, Dougnon V.</div>
+          <div class="src"><i>Molecules</i> 2026; 31: 1879 · <a href="https://doi.org/10.3390/molecules31111879" target="_blank" rel="noopener">doi:10.3390/molecules31111879</a></div>
+        </div></li>
+        <li class="yr" aria-hidden="true">2025</li>
+        <li><div>
+          <div class="t"><span class="tag">AMR</span>Potent antimicrobial and anti-biofilm effects of <i>Uvaria chamae</i> on <i>Staphylococcus aureus</i> strains via potential cell wall interference and lack of resistance induction</div>
+          <div class="au">Reigada I, Togbe E, <b>Sovegnon T</b>, Ylätalo M, Kapp K, Zore M, Sipari N, Legba B, Dougnon V, Hanski L.</div>
+          <div class="src"><i>Journal of Ethnopharmacology</i> 2025; 353: 120434 · <a href="https://doi.org/10.1016/j.jep.2025.120434" target="_blank" rel="noopener">doi:10.1016/j.jep.2025.120434</a></div>
+        </div></li>
+        <li><div>
+          <div class="t"><span class="tag">Comment</span>BioStruct-Africa's capacity building workshops as a model for advancing the emerging community of structural biologists in Africa</div>
+          <div class="au">Sankhe S, Fofana FG, Heiba W, … <b>Sovegnon TSD</b>, … Griese JJ, Nji E.</div>
+          <div class="src"><i>Communications Chemistry</i> 2025; 8: 118 · <a href="https://doi.org/10.1038/s42004-025-01519-w" target="_blank" rel="noopener">doi:10.1038/s42004-025-01519-w</a></div>
+        </div></li>
+        <li class="yr" aria-hidden="true">2024</li>
+        <li><div>
+          <div class="t"><span class="tag">Micro</span>Antimicrobial and enzymatic potential of <i>Pterocarpus erinaceus</i> Poir. endophytes used in Benin (West Africa)</div>
+          <div class="au">Aliou S, Fanou B, Klotoé JR, Agbodjento E, Dougnon V, Gbesso N, Yangambele T, Hinnilo C, <b>Sovègnon T</b>, Akotègnon R, Yemadje A, Nonviho G, Fagbohoun L, Baba-Moussa L.</div>
+          <div class="src"><i>Bulletin of the National Research Centre</i> 2024; 48: 128 · <a href="https://doi.org/10.1186/s42269-024-01284-1" target="_blank" rel="noopener">doi:10.1186/s42269-024-01284-1</a></div>
+        </div></li>
+        <li><div>
+          <div class="t"><span class="tag">Micro</span>Enzymatic and antimicrobial activities of endophytes in <i>Khaya senegalensis</i></div>
+          <div class="au">Aliou S, Fanou B, Agbodjento E, Dougnon V, Gbesso N, Yangambele T, Hinnilo C, Gnonlonfoun S, <b>Sovègnon T</b>, Hounsa E, Yemadje A, Nonviho G, Fagbohoun L, Klotoé JR.</div>
+          <div class="src"><i>International Journal of Biosciences</i> 2024; 25(3): 230–243 · <a href="https://doi.org/10.12692/ijb/25.3.230-243" target="_blank" rel="noopener">doi:10.12692/ijb/25.3.230-243</a></div>
+        </div></li>
+        <li class="yr" aria-hidden="true">2019</li>
+        <li><div>
+          <div class="t"><span class="tag">AMR</span>Evaluation of the antibacterial activity of <i>Jatropha multifida</i> sap and <i>Artemisia annua</i> extract on some clinical strains responsible of urinary tract infections</div>
+          <div class="au">Dougnon V, <b>Sovegnon T</b>, Agbankpe J, Aniambossou A, Amadou A, Dougnon J, Baba-Moussa L.</div>
+          <div class="src"><i>Indian Journal of Science and Technology</i> 2019; 12(36) · <a href="https://doi.org/10.17485/ijst/2019/v12i36/146792" target="_blank" rel="noopener">doi:10.17485/ijst/2019/v12i36/146792</a></div>
+        </div></li>
+      </ol>
+
+      <p class="sub" style="margin-top:36px"><span data-l="fr">Illustrations scientifiques</span><span data-l="en">Scientific illustrations</span></p>
+      <ol class="pubs figs">
+        <li><div>
+          <div class="t"><span class="tag">In vivo</span><span data-l="fr">Activité antibactérienne in vivo sur <i>Caenorhabditis elegans</i></span><span data-l="en">In vivo antibacterial activity on <i>Caenorhabditis elegans</i></span></div>
+          <div class="pubmeta"><span class="where" style="margin:0 12px 0 0">Sovegnon, T. (2024) · <span data-l="fr">modèle BioRender</span><span data-l="en">BioRender template</span></span><a class="find" href="https://app.biorender.com/profile/toussaint_sovegnon/templates/65f3749a0f1a6248a3d93c5c" target="_blank" rel="noopener"><span data-l="fr">Voir sur BioRender ↗</span><span data-l="en">View on BioRender ↗</span></a></div>
+        </div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="distinctions">
+    <h2><span data-l="fr">Distinctions</span><span data-l="en">Honours</span></h2>
+    <div class="body grid2">
+      <div>
+        <p class="sub"><span data-l="fr">Bourses et prix</span><span data-l="en">Awards &amp; funding</span></p>
+        <ul class="plain">
+          <li><span data-l="fr">Bourse doctorale ARES PRD, projet VALUCHAM</span><span data-l="en">ARES PRD doctoral scholarship, VALUCHAM project</span> <span>· 2024–2028</span></li>
+          <li><span data-l="fr">Bourse de mobilité ARES</span><span data-l="en">ARES mobility scholarship</span> <span>· 2024</span></li>
+          <li><span data-l="fr">Bourse de formation Schrödinger</span><span data-l="en">Schrödinger training scholarship</span> <span>· 2024</span></li>
+          <li><span data-l="fr">Fellowship BioStruct-Africa, Douala</span><span data-l="en">BioStruct-Africa fellowship, Douala</span> <span>· 2024</span></li>
+          <li><span data-l="fr">Bourse de mobilité GINTL, Université d'Helsinki</span><span data-l="en">GINTL mobility scholarship, University of Helsinki</span> <span>· 2023</span></li>
+          <li><span data-l="fr">Prix de la meilleure communication orale, Journées doctorales de l'Université de Parakou</span><span data-l="en">Best oral presentation award, Doctoral Days, University of Parakou</span> <span>· 2019</span></li>
+        </ul>
+      </div>
+      <div>
+        <p class="sub"><span data-l="fr">Langues</span><span data-l="en">Languages</span></p>
+        <ul class="plain">
+          <li><span data-l="fr">Français</span><span data-l="en">French</span> <span>· <span data-l="fr">langue maternelle</span><span data-l="en">native</span></span></li>
+          <li>Fon <span>· <span data-l="fr">langue maternelle</span><span data-l="en">native</span></span></li>
+          <li><span data-l="fr">Anglais</span><span data-l="en">English</span> <span>· B2</span></li>
+        </ul>
+        <p class="sub"><span data-l="fr">Sociétés savantes</span><span data-l="en">Memberships</span></p>
+        <ul class="plain">
+          <li>American Society for Microbiology (ASM)</li>
+          <li>British Society for Antimicrobial Chemotherapy (BSAC)</li>
+        </ul>
+      </div>
+      <div style="grid-column:1/-1">
+        <p class="sub"><span data-l="fr">Formations sélectionnées</span><span data-l="en">Selected training</span></p>
+        <ul class="plain">
+          <li>Advanced drug design training (1 <span data-l="fr">mois</span><span data-l="en">month</span>) <span>· CAT2D Laboratory · 2025</span></li>
+          <li>Introduction to Molecular Modeling in Drug Discovery <span>· Schrödinger · 2025</span></li>
+          <li>Hands-on training in structural biology, series 5 <span>· BioStruct-Africa, Douala · 2024</span></li>
+          <li><span data-l="fr">Formation pratique en docking moléculaire (1 semaine)</span><span data-l="en">Hands-on molecular docking training (1 week)</span> <span>· 2024</span></li>
+          <li>Basics of Clinical Trial Management <span>· BIO Ventures for Global Health · 2024</span></li>
+          <li>Good Clinical Practice (GCP) <span>· NIDA Clinical Trials Network · 2024</span></li>
+          <li>Antimicrobial stewardship programmes in LMIC health-care facilities <span>· <span data-l="fr">OMS</span><span data-l="en">WHO</span> · 2024</span></li>
+          <li>Bacterial Genomes: Antimicrobial Resistance in Bacterial Pathogens <span>· Wellcome Connecting Science · 2022</span></li>
+        </ul>
+        <p class="morenote" data-l="fr">Et plus de 50 autres formations en ligne : OMS, CDC Foundation, Wellcome Connecting Science, The Open University, Elsevier Researcher Academy…</p>
+        <p class="morenote" data-l="en">Plus more than 50 other online courses: WHO, CDC Foundation, Wellcome Connecting Science, The Open University, Elsevier Researcher Academy…</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="border-bottom:0">
+    <h2>Contact</h2>
+    <div class="body">
+      <p data-l="fr">Pour une collaboration, un projet ou une question sur mes travaux, écrivez-moi.</p>
+      <p data-l="en">For a collaboration, a project or a question about my work, get in touch.</p>
+      <div class="contact">
+        <div class="row">
+          <span class="k">UCLouvain</span>
+          <span class="addr" id="mail-pro">semevo.sovegnon@uclouvain.be</span>
+          <button class="copy" type="button" id="copy-pro" data-target="mail-pro"><span data-l="fr">Copier</span><span data-l="en">Copy</span></button>
+        </div>
+        <div class="row">
+          <span class="k"><span data-l="fr">Personnel</span><span data-l="en">Personal</span></span>
+          <span class="addr" id="mail-perso">sovegnondelberson@gmail.com</span>
+          <button class="copy" type="button" id="copy-perso" data-target="mail-perso"><span data-l="fr">Copier</span><span data-l="en">Copy</span></button>
+        </div>
+        <div class="row">
+          <span class="k">LinkedIn</span>
+          <a class="addr" href="https://www.linkedin.com/in/delberson-sovegnon-microbiologist" target="_blank" rel="noopener">linkedin.com/in/delberson-sovegnon-microbiologist</a>
+        </div>
+      </div>
+      <footer>
+        <span>© 2026 Delberson Sovegnon</span>
+        <span data-l="fr">Louvain Drug Research Institute · Avenue Mounier, Bruxelles</span>
+        <span data-l="en">Louvain Drug Research Institute · Avenue Mounier, Brussels</span>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  function setLang(l) {
+    root.setAttribute('data-ui', l);
+    root.setAttribute('lang', l);
+    document.querySelectorAll('.lang button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.set === l));
+    });
+    try { localStorage.setItem('ds-lang', l); } catch (e) {}
+  }
+  var initial = 'fr';
+  var h = (location.hash || '').replace('#', '');
+  if (h === 'en' || h === 'fr') initial = h;
+  else {
+    try { var s = localStorage.getItem('ds-lang'); if (s === 'en' || s === 'fr') initial = s; } catch (e) {}
+  }
+  setLang(initial);
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.dataset.set); });
+  });
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.dataset.target);
+      var text = el.textContent.trim();
+      var done = function () {
+        var fr = btn.querySelector('[data-l="fr"]'), en = btn.querySelector('[data-l="en"]');
+        fr.textContent = 'Copié'; en.textContent = 'Copied';
+        setTimeout(function () { fr.textContent = 'Copier'; en.textContent = 'Copy'; }, 1600);
+      };
+      var fallback = function () {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      };
+      try {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } catch (e) { fallback(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
